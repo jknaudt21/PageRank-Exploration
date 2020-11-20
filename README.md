@@ -63,7 +63,9 @@ INFO:root:rank=6 pagerank=6.5047e-04 url=www.lawfareblog.com/congressional-homel
 INFO:root:rank=7 pagerank=6.3621e-04 url=www.lawfareblog.com/paper-hearing-experts-debate-digital-contact-tracing-and-coronavirus-privacy-concerns
 INFO:root:rank=8 pagerank=6.1249e-04 url=www.lawfareblog.com/house-subcommittee-voices-concerns-over-us-management-coronavirus
 INFO:root:rank=9 pagerank=6.0188e-04 url=www.lawfareblog.com/livestream-house-oversight-committee-holds-hearing-government-coronavirus-response
+```
 
+```
 In [4]: run pagerank.py --data=./lawfareblog.csv.gz --search_query="snowden"
 INFO:root:rank=0 pagerank=2.8741e-01 url=www.lawfareblog.com/snowden-revelations
 INFO:root:rank=1 pagerank=2.1730e-03 url=www.lawfareblog.com/thoughts-assange-indictment-wheres-vault-7
