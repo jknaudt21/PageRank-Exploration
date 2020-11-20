@@ -9,9 +9,11 @@ import math
 import torch
 import gzip
 import csv
-
+import gensim.downloader
 import logging
 
+global vectors  # Global definition to  avoid loading multiple times
+vectors = gensim.downloader.load('glove-twitter-25')
 
 class WebGraph():
 
@@ -215,12 +217,23 @@ def url_satisfies_query(url, query):
                 return False
     return satisfies
 
+def improveQuery(query):
+    ''' Helper function that improves queries using gensim''' 
+    minusFlag=''
+    if query != '' and query != None:
+        if '-' in query: # Ensure that we append a minus if the query has a minus
+            minusFlag = '-'
+        for word,_ in vectors.most_similar(query.replace('-',''))[:5]:
+            query += ' '+ minusFlag+ word
+    return query
+
+
 
 if __name__=='__main__':
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--data', required=True)
-    parser.add_argument('--personalization_vector_query')
+    parser.add_argument('--personalization_vector_query', default=None)
     parser.add_argument('--search_query', default='')
     parser.add_argument('--filter_ratio', type=float, default=None)
     parser.add_argument('--alpha', type=float, default=0.85)
@@ -234,8 +247,7 @@ if __name__=='__main__':
         logging.basicConfig(level=logging.DEBUG)
     else:
         logging.basicConfig(level=logging.INFO)
-
     g = WebGraph(args.data, filter_ratio=args.filter_ratio)
-    v = g.make_personalization_vector(args.personalization_vector_query)
+    v = g.make_personalization_vector(improveQuery(args.personalization_vector_query))
     pi = g.power_method(v, alpha=args.alpha, max_iterations=args.max_iterations, epsilon=args.epsilon)
-    g.search(pi, query=args.search_query, max_results=args.max_results)
+    g.search(pi, query=improveQuery(args.search_query), max_results=args.max_results)

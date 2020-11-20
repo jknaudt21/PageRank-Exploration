@@ -3,7 +3,7 @@
 
 **Contributors:** Mike Izbicki
 
-**Date:** September 13, 2020
+**Date:** November 20, 2020
 
 This simple project explores a custom implementation of the Pagerank algorithm as well as the use of a personalization vector
 
@@ -24,6 +24,9 @@ INFO:root:rank=3 pagerank=2.0443e-01 url=2
 INFO:root:rank=4 pagerank=1.0243e-01 url=3
 INFO:root:rank=5 pagerank=9.2101e-02 url=1
 ```
+### Using Word2Vec to improve queries
+This implementation of pagerank uses the `gensim` library to create word vectors and improve query results. Whenever a query (or personalization vector query) is made, we expand it by adding the 5 most similar words to it. This means that if we use the minus `-` sign in a query, we'd get the top urls the *exclude* the query and its 5 most similar words. For the `gensim` model I used `glove-twitter-25` simply because its lightweight, but the model could be improved if we used bigger `gensim` models. 
+
 ### Search Queries
 The `pagerank.py` file has an option `--search_query`, which takes a string as a parameter.
 If this argument is used, then program returns all urls that match the query string sorted according to their pagerank.
@@ -32,6 +35,21 @@ Essentially, this gives us the most important pages on the blog related to our q
 **Note:** to ensure proper desired behavior, the search query must be entered using double (") quotes 
 
 The examples below will now use the webgraph of [Lawfareblog.com](www.lawfareblog.com), from the file `lawfareblog.cvs.gz`, as its a larger and more relevant dataset
+
+```
+In [1]: run pagerank.py --data=./lawfareblog.csv.gz --search_query="weapons"
+INFO:root:rank=0 pagerank=4.5717e-03 url=www.lawfareblog.com/why-did-you-wait-moral-emptiness-and-drone-strikes
+INFO:root:rank=1 pagerank=3.1108e-03 url=www.lawfareblog.com/dc-district-court-dismisses-journalists-drone-lawsuit
+INFO:root:rank=2 pagerank=2.0232e-03 url=www.lawfareblog.com/revived-cia-drone-strike-program-comments-new-policy
+INFO:root:rank=3 pagerank=1.9668e-03 url=www.lawfareblog.com/us-court-appeals-dc-circuit-dismisses-suit-over-us-drone-strike
+INFO:root:rank=4 pagerank=1.1788e-03 url=www.lawfareblog.com/iran-shoots-down-us-drone-domestic-and-international-legal-implications
+INFO:root:rank=5 pagerank=1.1620e-03 url=www.lawfareblog.com/slaughterbots-and-other-anticipated-autonomous-weapons-problems
+INFO:root:rank=6 pagerank=1.1276e-03 url=www.lawfareblog.com/german-courts-weigh-legal-responsibility-us-drone-strikes
+INFO:root:rank=7 pagerank=8.3740e-04 url=www.lawfareblog.com/shift-jsoc-drone-strikes-does-not-mean-cia-has-been-sidelined
+INFO:root:rank=8 pagerank=7.8705e-04 url=www.lawfareblog.com/atomwaffen-division-member-pleads-guilty-firearms-charge
+INFO:root:rank=9 pagerank=7.8571e-04 url=www.lawfareblog.com/waiving-imminent-threat-test-cia-drone-strikes-pakistan
+```
+
 
 ```
 In [3]: run pagerank.py --data=./lawfareblog.csv.gz --search_query="corona"
@@ -48,15 +66,15 @@ INFO:root:rank=9 pagerank=6.0188e-04 url=www.lawfareblog.com/livestream-house-ov
 
 In [4]: run pagerank.py --data=./lawfareblog.csv.gz --search_query="snowden"
 INFO:root:rank=0 pagerank=2.8741e-01 url=www.lawfareblog.com/snowden-revelations
-INFO:root:rank=1 pagerank=1.4839e-03 url=www.lawfareblog.com/justice-department-sues-edward-snowden
-INFO:root:rank=2 pagerank=1.4821e-03 url=www.lawfareblog.com/lawfare-podcast-timothy-edgar-mass-surveillance-after-snowden
-INFO:root:rank=3 pagerank=1.4710e-03 url=www.lawfareblog.com/fifth-anniversary-snowden-disclosures
-INFO:root:rank=4 pagerank=1.4529e-03 url=www.lawfareblog.com/edward-snowden-national-security-whistleblowing-and-civil-disobedience
-INFO:root:rank=5 pagerank=7.3317e-04 url=www.lawfareblog.com/judge-rules-snowden-cannot-profit-book
-INFO:root:rank=6 pagerank=5.5603e-04 url=www.lawfareblog.com/why-obama-should-pardon-edward-snowden
-INFO:root:rank=7 pagerank=5.4787e-04 url=www.lawfareblog.com/latest-snowden-leak-nsa-isnt-spying-lawyers
-INFO:root:rank=8 pagerank=5.4707e-04 url=www.lawfareblog.com/snowden-operation-inside-wests-greatest-intelligence-disaster-edward-lucas
-INFO:root:rank=9 pagerank=5.3786e-04 url=www.lawfareblog.com/three-years-later-how-snowden-helped-us-intelligence-community
+INFO:root:rank=1 pagerank=2.1730e-03 url=www.lawfareblog.com/thoughts-assange-indictment-wheres-vault-7
+INFO:root:rank=2 pagerank=2.1639e-03 url=www.lawfareblog.com/assange-indictment-seeks-punish-pure-publication
+INFO:root:rank=3 pagerank=2.1639e-03 url=www.lawfareblog.com/us-media-crosshairs-new-assange-indictment
+INFO:root:rank=4 pagerank=1.4839e-03 url=www.lawfareblog.com/justice-department-sues-edward-snowden
+INFO:root:rank=5 pagerank=1.4821e-03 url=www.lawfareblog.com/lawfare-podcast-timothy-edgar-mass-surveillance-after-snowden
+INFO:root:rank=6 pagerank=1.4710e-03 url=www.lawfareblog.com/fifth-anniversary-snowden-disclosures
+INFO:root:rank=7 pagerank=1.4529e-03 url=www.lawfareblog.com/edward-snowden-national-security-whistleblowing-and-civil-disobedience
+INFO:root:rank=8 pagerank=1.3622e-03 url=www.lawfareblog.com/assange-superseding-indictment-0
+INFO:root:rank=9 pagerank=1.2001e-03 url=www.lawfareblog.com/israels-netanyahu-indicted-amid-political-gridlock
 ```
 ### Further Enhancements
 
@@ -149,16 +167,16 @@ which provides an alternative method for searching by doing the filtering on the
 For example, we can consider a user that's fairly interested on the ongoing Coronavirus crisis. Then, their Pagerank results could look something like this: 
 ```
 In [9]: run pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2 --personalization_vector_query="corona"
-INFO:root:rank=0 pagerank=6.3127e-01 url=www.lawfareblog.com/covid-19-speech-and-surveillance-response
-INFO:root:rank=1 pagerank=6.3124e-01 url=www.lawfareblog.com/lawfare-live-covid-19-speech-and-surveillance
-INFO:root:rank=2 pagerank=1.5947e-01 url=www.lawfareblog.com/chinatalk-how-party-takes-its-propaganda-global
-INFO:root:rank=3 pagerank=1.2209e-01 url=www.lawfareblog.com/rational-security-my-corona-edition
-INFO:root:rank=4 pagerank=1.2209e-01 url=www.lawfareblog.com/brexit-not-immune-coronavirus
-INFO:root:rank=5 pagerank=9.3360e-02 url=www.lawfareblog.com/trump-cant-reopen-country-over-state-objections
-INFO:root:rank=6 pagerank=9.1920e-02 url=www.lawfareblog.com/britains-coronavirus-response
-INFO:root:rank=7 pagerank=9.1920e-02 url=www.lawfareblog.com/prosecuting-purposeful-coronavirus-exposure-terrorism
-INFO:root:rank=8 pagerank=7.7770e-02 url=www.lawfareblog.com/lawfare-podcast-united-nations-and-coronavirus-crisis
-INFO:root:rank=9 pagerank=7.2888e-02 url=www.lawfareblog.com/house-oversight-committee-holds-day-two-hearing-government-coronavirus-response
+INFO:root:rank=0 pagerank=6.3213e-01 url=www.lawfareblog.com/covid-19-speech-and-surveillance-response
+INFO:root:rank=1 pagerank=6.3211e-01 url=www.lawfareblog.com/lawfare-live-covid-19-speech-and-surveillance
+INFO:root:rank=2 pagerank=1.4962e-01 url=www.lawfareblog.com/chinatalk-how-party-takes-its-propaganda-global
+INFO:root:rank=3 pagerank=1.1626e-01 url=www.lawfareblog.com/rational-security-my-corona-edition
+INFO:root:rank=4 pagerank=1.1626e-01 url=www.lawfareblog.com/brexit-not-immune-coronavirus
+INFO:root:rank=5 pagerank=8.8833e-02 url=www.lawfareblog.com/trump-cant-reopen-country-over-state-objections
+INFO:root:rank=6 pagerank=8.5443e-02 url=www.lawfareblog.com/prosecuting-purposeful-coronavirus-exposure-terrorism
+INFO:root:rank=7 pagerank=8.5443e-02 url=www.lawfareblog.com/britains-coronavirus-response
+INFO:root:rank=8 pagerank=7.1883e-02 url=www.lawfareblog.com/lawfare-podcast-united-nations-and-coronavirus-crisis
+INFO:root:rank=9 pagerank=6.8968e-02 url=www.lawfareblog.com/house-oversight-committee-holds-day-two-hearing-government-coronavirus-response
 ```
 
 Notice that these results differ than those from using `--search_query`
@@ -177,32 +195,32 @@ For example, the following query ranks all webpages by their `corona` importance
 but removes webpages mentioning `corona` from the results.
 ```
 In [10]: run pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2 --personalization_vector_query="corona" --search_query="-corona"
-INFO:root:rank=0 pagerank=6.3127e-01 url=www.lawfareblog.com/covid-19-speech-and-surveillance-response
-INFO:root:rank=1 pagerank=6.3124e-01 url=www.lawfareblog.com/lawfare-live-covid-19-speech-and-surveillance
-INFO:root:rank=2 pagerank=1.5947e-01 url=www.lawfareblog.com/chinatalk-how-party-takes-its-propaganda-global
-INFO:root:rank=3 pagerank=9.3360e-02 url=www.lawfareblog.com/trump-cant-reopen-country-over-state-objections
-INFO:root:rank=4 pagerank=7.0277e-02 url=www.lawfareblog.com/fault-lines-foreign-policy-quarantined
-INFO:root:rank=5 pagerank=6.9713e-02 url=www.lawfareblog.com/lawfare-podcast-mom-and-dad-talk-clinical-trials-pandemic
-INFO:root:rank=6 pagerank=6.4944e-02 url=www.lawfareblog.com/limits-world-health-organization
-INFO:root:rank=7 pagerank=5.9492e-02 url=www.lawfareblog.com/chinatalk-dispatches-shanghai-beijing-and-hong-kong
-INFO:root:rank=8 pagerank=5.1245e-02 url=www.lawfareblog.com/us-moves-dismiss-case-against-company-linked-ira-troll-farm
-INFO:root:rank=9 pagerank=5.1245e-02 url=www.lawfareblog.com/livestream-house-foreign-affairs-committee-holds-hearing-crisis-idlib
+INFO:root:rank=0 pagerank=6.3213e-01 url=www.lawfareblog.com/covid-19-speech-and-surveillance-response
+INFO:root:rank=1 pagerank=6.3211e-01 url=www.lawfareblog.com/lawfare-live-covid-19-speech-and-surveillance
+INFO:root:rank=2 pagerank=1.4962e-01 url=www.lawfareblog.com/chinatalk-how-party-takes-its-propaganda-global
+INFO:root:rank=3 pagerank=8.8833e-02 url=www.lawfareblog.com/trump-cant-reopen-country-over-state-objections
+INFO:root:rank=4 pagerank=6.8562e-02 url=www.lawfareblog.com/lawfare-podcast-mom-and-dad-talk-clinical-trials-pandemic
+INFO:root:rank=5 pagerank=6.5838e-02 url=www.lawfareblog.com/fault-lines-foreign-policy-quarantined
+INFO:root:rank=6 pagerank=6.1389e-02 url=www.lawfareblog.com/limits-world-health-organization
+INFO:root:rank=7 pagerank=5.5939e-02 url=www.lawfareblog.com/chinatalk-dispatches-shanghai-beijing-and-hong-kong
+INFO:root:rank=8 pagerank=5.4060e-02 url=www.lawfareblog.com/trump-asks-supreme-court-stay-congressional-subpeona-tax-returns
+INFO:root:rank=9 pagerank=4.9363e-02 url=www.lawfareblog.com/us-moves-dismiss-case-against-company-linked-ira-troll-farm
 ```
-You can see that there are many urls about concepts that are obviously related like "covid", "clinical trials", and "quarantine",
-but this algorithm also finds articles about Chinese propaganda and Trump's policy decisions.
+You can see that there are many urls about concepts that are obviously related like "covid", "clinical trials",
+but this algorithm also finds articles about Chinese propaganda and Trump's policy decisions. Plus, we're also omitting the words that `gensim` believes are most closely related to `corona`. Note that "covid" is included in these results because it is not a word in the `gensim` library
 
-Another example of this advanced querying technique would be to look for articles related to the Snowden investigation but do not explicitly include `snowden` in the url
+Another example of this advanced querying technique would be to look for articles related to the Snowden investigation but do not explicitly include `snowden` or similar words in the url
 
 ``` 
 In [11]: run pagerank.py --data=./lawfareblog.csv.gz --filter_ratio=0.2 --personalization_vector_query="snowden" --search_query="-snowden"
-INFO:root:rank=0 pagerank=4.0829e-01 url=www.lawfareblog.com/trump-asks-supreme-court-stay-congressional-subpeona-tax-returns
-INFO:root:rank=1 pagerank=2.3729e-01 url=www.lawfareblog.com/opening-statement-david-holmes
-INFO:root:rank=2 pagerank=2.3729e-01 url=www.lawfareblog.com/livestream-nov-21-impeachment-hearings-0
-INFO:root:rank=3 pagerank=2.2999e-01 url=www.lawfareblog.com/senate-examines-threats-homeland
-INFO:root:rank=4 pagerank=2.0553e-01 url=www.lawfareblog.com/huawei-foreign-power-or-agent-foreign-power-under-fisa-insights-sanctions-case
-INFO:root:rank=5 pagerank=1.9332e-01 url=www.lawfareblog.com/open-letter-gchq-threats-posed-ghost-proposal
-INFO:root:rank=6 pagerank=1.8729e-01 url=www.lawfareblog.com/proposed-response-commercial-surveillance-emergency
-INFO:root:rank=7 pagerank=1.7957e-01 url=www.lawfareblog.com/what-make-first-day-impeachment-hearings
-INFO:root:rank=8 pagerank=1.7957e-01 url=www.lawfareblog.com/livestream-house-armed-services-committee-hearing-f-35-program
-INFO:root:rank=9 pagerank=1.7944e-01 url=www.lawfareblog.com/whats-house-resolution-impeachment
+INFO:root:rank=0 pagerank=4.2759e-01 url=www.lawfareblog.com/trump-asks-supreme-court-stay-congressional-subpeona-tax-returns
+INFO:root:rank=1 pagerank=2.5901e-01 url=www.lawfareblog.com/livestream-nov-21-impeachment-hearings-0
+INFO:root:rank=2 pagerank=2.5901e-01 url=www.lawfareblog.com/opening-statement-david-holmes
+INFO:root:rank=3 pagerank=2.1517e-01 url=www.lawfareblog.com/senate-examines-threats-homeland
+INFO:root:rank=4 pagerank=1.7603e-01 url=www.lawfareblog.com/what-make-first-day-impeachment-hearings
+INFO:root:rank=5 pagerank=1.7603e-01 url=www.lawfareblog.com/livestream-house-armed-services-committee-hearing-f-35-program
+INFO:root:rank=6 pagerank=1.7593e-01 url=www.lawfareblog.com/whats-house-resolution-impeachment
+INFO:root:rank=7 pagerank=1.6738e-01 url=www.lawfareblog.com/congress-us-policy-toward-syria-and-turkey-overview-recent-hearings
+INFO:root:rank=8 pagerank=1.6122e-01 url=www.lawfareblog.com/huawei-foreign-power-or-agent-foreign-power-under-fisa-insights-sanctions-case
+INFO:root:rank=9 pagerank=1.5172e-01 url=www.lawfareblog.com/open-letter-gchq-threats-posed-ghost-proposal
 ```
